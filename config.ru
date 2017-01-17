@@ -6,4 +6,4 @@ end
 
 use Rack::MethodOverride
 run ApplicationController
-# use NotesController
+use NotesController
