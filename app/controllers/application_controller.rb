@@ -54,10 +54,6 @@ class ApplicationController < Sinatra::Base
   end
 
 
-  get '/notes' do 
-  	erb :'notes/index'
-  end 
-
   get '/logout' do 
 	    session.clear
 	    redirect '/login'
