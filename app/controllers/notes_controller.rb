@@ -1,8 +1,12 @@
 class NotesController < ApplicationController 
 
-  get '/notes' do 
-  	@notes = current_user.notes.map { |note| note.content}
-  	erb :'notes/index'
+  get '/notes' do
+  	if logged_in? 
+	  	@notes = current_user.notes
+	  	erb :'notes/index'
+  	else 
+		redirect '/login'
+	end 
   end 
 
   get '/notes/new' do
@@ -14,13 +18,22 @@ class NotesController < ApplicationController
 end 
 
 post '/notes' do 
-	@note = current_user.notes.build(content: params[:content])
+	@note = current_user.notes.build(title: params[:title], content: params[:content])
 	if @note.save 
 		redirect "/notes"
 	else 
 		redirect '/notes/new'
 	end 
 
+end 
+
+get '/tweets/:id' do 
+	if logged_in?
+		@note = current_user.notes.find_by_id(params[:id])
+		erb :'tweets/show'
+	else 
+		redirect '/login'
+	end 
 end 
 
 
