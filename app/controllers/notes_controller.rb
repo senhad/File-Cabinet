@@ -54,5 +54,15 @@ patch '/notes/:id' do
 end 
 
 
+delete '/notes/:id/delete' do
+	@note = current_user.notes.find_by_id(params[:id])
+	if logged_in? 
+		@note.delete
+		redirect to '/notes'
+	else 
+		redirect '/login'
+	end 
+end 
+
 
 end 
