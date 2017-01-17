@@ -4,8 +4,12 @@
 <h2> Here are your notes:</h2>
 <br>
 
-<ul>
+<table>
 <% @notes.each do |note| %>
-	<li><a href="/notes/<%=note.id%>"><%= note.title %></a></li><br> 
+<tr>
+	<td><h3><a href="/notes/<%=note.id%>"><%= note.title %></a></h3></td>
+	<td>&nbsp;&nbsp;&nbsp;&nbsp;</td>
+    <td><a href="/notes/<%=note.id%>/edit">Edit Note</a></td>
+</tr>
 <%end%>
-</ul>
+</table>
