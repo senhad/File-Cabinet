@@ -25,6 +25,9 @@
      <a href="/notes/new">New note</a>
      <a href="/notes">Note list</a>
      <%end%>
+     <% if flash.has?(:message) %>
+    <%= flash[:message] %>
+    <% end %>
 
 
   

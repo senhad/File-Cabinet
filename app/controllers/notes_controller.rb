@@ -5,6 +5,7 @@ class NotesController < ApplicationController
 	  	@notes = current_user.notes
 	  	erb :'notes/index'
   	else 
+  		flash[:message] = "You are not logged in." 
 		redirect '/login'
 	end 
   end 
@@ -13,6 +14,7 @@ class NotesController < ApplicationController
 	if logged_in?
 		erb :'notes/new'
 	else 
+		flash[:message] = "You are not logged in."
 		redirect '/login'
 	end
 end 
@@ -20,6 +22,7 @@ end
 post '/notes' do 
 	@note = current_user.notes.build(title: params[:title], content: params[:content])
 	if @note.save 
+		flash[:message] = "You successfully created a new note!"
 		redirect "/notes"
 	else 
 		redirect '/notes/new'
@@ -41,6 +44,7 @@ get '/notes/:id/edit' do
 		@note = current_user.notes.find_by_id(params[:id])
 		erb :'notes/edit'
 	else 
+		flash[:message] = "You are not logged in."
 		redirect '/login'
 	end 
 end 
@@ -50,6 +54,7 @@ patch '/notes/:id' do
 		@note.title = params[:title]
 		@note.content = params[:content]
 		@note.save
+		flash[:message] = "You note is edited."
 		redirect "/notes/#{@note.id}"
 end 
 
@@ -58,8 +63,10 @@ delete '/notes/:id/delete' do
 	@note = current_user.notes.find_by_id(params[:id])
 	if logged_in? 
 		@note.delete
+		flash[:message] = "You successfully deleted the note."
 		redirect to '/notes'
 	else 
+		flash[:message] = "You are not logged in."
 		redirect '/login'
 	end 
 end 
