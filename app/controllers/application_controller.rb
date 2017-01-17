@@ -9,12 +9,20 @@ class ApplicationController < Sinatra::Base
     set :session_secret, "secret"
   end
 
-  get '/' do 
+  get '/' do
+  	if !logged_in? 
   		erb :index
+  	else 
+  		redirect '/notes'
+  	end
   end 
 
-  get '/signup' do 
+  get '/signup' do
+  	if !logged_in? 
   		erb :'users/signup'
+  	else 
+  		redirect '/notes'
+  	end 
   end 
 
   post '/signup' do
@@ -28,7 +36,11 @@ class ApplicationController < Sinatra::Base
   end
 
   get '/login' do
+  	if !logged_in?
     	erb :'users/login'	
+    else 
+    	redirect '/notes'  
+    end 
   end
 
   post '/login' do
@@ -62,7 +74,7 @@ class ApplicationController < Sinatra::Base
 	  @current_user ||= User.find(session[:id]) if session[:id]
 	end 
 
-end 
+  end 
 
 
 
