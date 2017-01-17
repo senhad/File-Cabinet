@@ -5,6 +5,24 @@ class NotesController < ApplicationController
   	erb :'notes/index'
   end 
 
+  get '/notes/new' do
+	if logged_in?
+		erb :'notes/new'
+	else 
+		redirect '/login'
+	end
+end 
+
+post '/notes' do 
+	@note = current_user.notes.build(content: params[:content])
+	if @note.save 
+		redirect "/notes"
+	else 
+		redirect '/notes/new'
+	end 
+
+end 
+
 
 
 end 
