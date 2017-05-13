@@ -9,6 +9,7 @@ class NotesController < ApplicationController
   	get '/notes/new' do
 		authenticate_user
 		erb :'notes/new'
+			
   	end 
 
 	post '/notes' do 
