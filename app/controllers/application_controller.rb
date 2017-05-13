@@ -4,11 +4,11 @@ require 'rack-flash'
 class ApplicationController < Sinatra::Base
 
   configure do
-    set :public_folder, 'public'
-    set :views, 'app/views'
-    enable :sessions
-    use Rack::Flash
-    set :session_secret, "secret"
+      set :public_folder, 'public'
+      set :views, 'app/views'
+      enable :sessions
+      use Rack::Flash
+      set :session_secret, "secret"
   end
 
   get '/' do
@@ -33,7 +33,7 @@ class ApplicationController < Sinatra::Base
       	session[:id] = @user.id
       	redirect '/notes'    #here can also put to redirect to login
       else 
-  		redirect '/signup'
+  		  redirect '/signup'
   	  end 
   end
 
