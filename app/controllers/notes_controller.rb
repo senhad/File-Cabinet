@@ -1,75 +1,72 @@
 class NotesController < ApplicationController 
 
-  get '/notes' do
-  	if logged_in? 
-	  	@notes = current_user.notes
-	  	erb :'notes/index'
-  	else 
-  		flash[:message] = "You are not logged in." 
-		redirect '/login'
-	end 
-  end 
+	get '/notes' do
+  		authenticate_user
+  		@notes = current_user.notes
+  		erb :'notes/index'
+  	end 
 
-  get '/notes/new' do
-	if logged_in?
+  	get '/notes/new' do
+		authenticate_user
 		erb :'notes/new'
-	else 
-		flash[:message] = "You are not logged in."
-		redirect '/login'
-	end
-end 
+  	end 
 
-post '/notes' do 
-	@note = current_user.notes.build(title: params[:title], content: params[:content])
-	if @note.save 
-		flash[:message] = "You successfully created a new note!"
-		redirect "/notes"
-	else 
-		redirect '/notes/new'
+	post '/notes' do 
+		@note = current_user.notes.build(title: params[:title], content: params[:content])
+		if @note.save 
+			flash[:message] = "You successfully created a new note!"
+			redirect "/notes"
+		else 
+			redirect '/notes/new'
+		end 
 	end 
 
-end 
+	get '/notes/:id' do 
+		authenticate_user
+		@note = Note.find_by_id(params[:id])
+		if @note && current_user == @note.user
+			erb :'notes/edit'
+		else
+			flash[:message] = "This is not your note."
+			redirect '/notes'
+		end
+	end 
 
-get '/notes/:id' do 
-	if logged_in?
+	get '/notes/:id/edit' do 
+		authenticate_user
+		@note = Note.find_by_id(params[:id])
+		if @note && current_user == @note.user
+			erb :'notes/edit'
+		else
+			flash[:message] = "This is not your note."
+			redirect '/notes'
+		end 
+	end 
+
+	patch '/notes/:id' do 
+		authenticate_user
+		@note = Note.find_by_id(params[:id])
+		if @note && current_user == @note.user
+			if @note.update(title: params[:title], content: params[:content])
+				flash[:message] = "You note is edited."
+				redirect "/notes/#{@note.id}"
+			else
+				flash[:message] = "Your note did not update."
+				redirect "/notes/#{@note.id}/edit"
+			end
+		else
+			flash[:message] = "This is not your note."
+			redirect '/notes'
+		end 
+	end 
+
+
+	delete '/notes/:id/delete' do
+		authenticate_user
 		@note = current_user.notes.find_by_id(params[:id])
-		erb :'notes/show'
-	else 
-		redirect '/login'
-	end 
-end 
-
-get '/notes/:id/edit' do 
-	if logged_in?
-		@note = current_user.notes.find_by_id(params[:id])
-		erb :'notes/edit'
-	else 
-		flash[:message] = "You are not logged in."
-		redirect '/login'
-	end 
-end 
-
-patch '/notes/:id' do 
-	@note = Note.find_by_id(params[:id])
-		@note.title = params[:title]
-		@note.content = params[:content]
-		@note.save
-		flash[:message] = "You note is edited."
-		redirect "/notes/#{@note.id}"
-end 
-
-
-delete '/notes/:id/delete' do
-	@note = current_user.notes.find_by_id(params[:id])
-	if logged_in? 
 		@note.delete
 		flash[:message] = "You successfully deleted the note."
 		redirect to '/notes'
-	else 
-		flash[:message] = "You are not logged in."
-		redirect '/login'
 	end 
-end 
-
 
 end 

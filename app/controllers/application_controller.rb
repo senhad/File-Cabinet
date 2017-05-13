@@ -21,7 +21,7 @@ class ApplicationController < Sinatra::Base
 
   get '/signup' do
   	if !logged_in? 
-  		erb :'users/signup'
+  	 erb :'users/signup'
   	else 
   		redirect '/notes'
   	end 
@@ -29,12 +29,12 @@ class ApplicationController < Sinatra::Base
 
   post '/signup' do
     @user = User.new(username: params["username"], email: params["email"], password: params["password"])
-    if @user.save
-    	session[:id] = @user.id
-    	redirect '/notes'    #here can also put to redirect to login
-    else 
-		redirect '/signup'
-	end 
+      if @user.save
+      	session[:id] = @user.id
+      	redirect '/notes'    #here can also put to redirect to login
+      else 
+  		redirect '/signup'
+  	  end 
   end
 
   get '/login' do
@@ -47,12 +47,12 @@ class ApplicationController < Sinatra::Base
 
   post '/login' do
     user = User.find_by(username: params[:username])
-	if user && user.authenticate(params[:password])
-		session[:id] = user.id 
-		redirect '/notes'
-	else 
-		redirect '/login'
-	end 
+  	if user && user.authenticate(params[:password])
+  		session[:id] = user.id 
+  		redirect '/notes'
+  	else 
+  		redirect '/login'
+  	end 
   end
 
 
@@ -64,16 +64,20 @@ class ApplicationController < Sinatra::Base
 
   helpers do 
 
-	def logged_in?
-	  !!current_user
-	end
+  	def logged_in?
+  	  !!current_user
+  	end
 
-	def current_user
-	  @current_user ||= User.find(session[:id]) if session[:id]
-	end 
+  	def current_user
+  	  @current_user ||= User.find(session[:id]) if session[:id]
+  	end 
 
-  end 
-
-
+    def authenticate_user
+      if !logged_in?
+        flash[:message] = "You are not logged in."
+        redirect '/login'
+      end
+    end 
+  end
 
 end
